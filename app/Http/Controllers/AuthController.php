@@ -20,7 +20,7 @@ class AuthController extends Controller implements HasMiddleware
         ]);
 
         if (!$token) {
-            return response()->json(['error' => 'Credenciais incorretas'], 401);
+            return response()->json(['mensagem' => 'Credenciais incorretas'], 401);
         }
 
         return response()->json([
