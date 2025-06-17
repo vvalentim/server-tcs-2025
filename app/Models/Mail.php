@@ -19,4 +19,16 @@ class Mail extends Model
         'status', // 'draft', 'sent', 'read'
         'sent_at',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'sent_at' => 'datetime',
+        ];
+    }
 }

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DraftController;
+use App\Http\Controllers\MailController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,3 +20,8 @@ Route::post('/rascunhos', [DraftController::class, 'store']);
 Route::put('/rascunhos/{draftId}', [DraftController::class, 'edit']);
 Route::get('/rascunhos/{draftId}', [DraftController::class, 'show']);
 Route::delete('/rascunhos/{draftId}', [DraftController::class, 'destroy']);
+
+Route::get('/emails', [MailController::class, 'list']);
+Route::post('/emails', [MailController::class, 'send']);
+Route::post('/emails/{draftId}', [MailController::class, 'sendFromDraft']);
+Route::put('/emails/{draftId}', [MailController::class, 'show']);
