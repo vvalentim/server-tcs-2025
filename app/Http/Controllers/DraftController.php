@@ -11,6 +11,31 @@ use Illuminate\Support\Facades\Auth;
 
 class DraftController extends Controller implements HasMiddleware
 {
+    private function extractFromModel(Mail $draft): array
+    {
+        return [
+            'rascunhoId' => $draft->id,
+            'assunto' => $draft->subject ?? "",
+            'emailDestinatario' => $draft->recipient ?? "",
+            'corpo' => $draft->body ?? "",
+        ];
+    }
+
+    public function list()
+    {
+        $drafts = Mail::where('status', 'draft')
+            ->where('sender', Auth::user()->email)
+            ->orderBy('updated_at', 'desc')
+            ->get();
+
+        $formattedDrafts = $drafts->map(fn($draft) => $this->extractFromModel($draft));
+
+        return response()->json([
+            'mensagem' => 'Rascunhos encontrados com sucesso',
+            'rascunhos' => $formattedDrafts,
+        ], 200);
+    }
+
     public function store(StoreDraftRequest $request)
     {
         $validated = $request->validated();
@@ -26,10 +51,7 @@ class DraftController extends Controller implements HasMiddleware
         if ($draft) {
             return response()->json([
                 'mensagem' => 'Rascunho criado com sucesso',
-                'rascunho' => [
-                    'rascunhoId' => $draft->id,
-                    ...$validated,
-                ],
+                'rascunho' => $this->extractFromModel($draft),
             ], 201);
         }
 
@@ -52,12 +74,7 @@ class DraftController extends Controller implements HasMiddleware
 
             return response()->json([
                 'mensagem' => 'Sucesso ao buscar rascunho',
-                'rascunho' => [
-                    'rascunhoId' => $draft->id,
-                    'assunto' => $draft->subject ?? "",
-                    'emailDestinatario' => $draft->recipient ?? "",
-                    'corpo' => $draft->body ?? "",
-                ],
+                'rascunho' => $this->extractFromModel($draft),
             ], 200);
         }
 
@@ -92,10 +109,7 @@ class DraftController extends Controller implements HasMiddleware
 
         return response()->json([
             'mensagem' => 'Rascunho atualizado com sucesso',
-            'rascunho' => [
-                'rascunhoId' => $draft->id,
-                ...$validated,
-            ],
+            'rascunho' => $this->extractFromModel($draft),
         ], 200);
     }
 

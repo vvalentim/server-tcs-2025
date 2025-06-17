@@ -16,7 +16,7 @@ class Mail extends Model
         'sender',
         'recipient',
         'body',
-        'status', // 'draft', 'deleted', 'sent', 'read'
+        'status', // 'draft', 'sent', 'read'
         'sent_at',
     ];
 }
