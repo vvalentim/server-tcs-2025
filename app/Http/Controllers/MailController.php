@@ -28,10 +28,12 @@ class MailController extends Controller implements HasMiddleware
 
     public function list()
     {
-        $drafts = Mail::where('sender', Auth::user()->email)
-            ->where(function (Builder $query) {
-                $query->where('status', 'sent')->orWhere('status', 'read');
-            })
+        $drafts = Mail::where(function (Builder $query) {
+            $query->where('recipient', Auth::user()->email);
+            // Add orWhere with 'sender' to get sent mails as well
+        })->where(function (Builder $query) {
+            $query->where('status', 'sent')->orWhere('status', 'read');
+        })
             ->orderBy('sent_at', 'desc')
             ->get();
 
