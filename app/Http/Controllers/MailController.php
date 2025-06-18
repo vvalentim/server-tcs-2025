@@ -49,7 +49,7 @@ class MailController extends Controller implements HasMiddleware
     {
         $validated = $request->validated();
 
-        $draft = Mail::create([
+        $mail = Mail::create([
             'subject' => $validated['assunto'],
             'sender' => Auth::user()->email,
             'recipient' => $validated['emailDestinatario'],
@@ -58,10 +58,10 @@ class MailController extends Controller implements HasMiddleware
             'status' => 'sent',
         ]);
 
-        if ($draft) {
+        if ($mail) {
             return response()->json([
                 'mensagem' => 'Email enviado com sucesso',
-                'email' => $this->extractFromModel($draft),
+                'email' => $this->extractFromModel($mail),
             ], 200);
         }
 
@@ -120,23 +120,23 @@ class MailController extends Controller implements HasMiddleware
 
     public function show(string $draftId)
     {
-        $draft = Mail::find($draftId);
+        $mail = Mail::find($draftId);
 
-        if ($draft && ($draft->status === 'sent' || $draft->status === 'read')) {
-            if ($draft->sender !== Auth::user()->email) {
+        if ($mail && ($mail->status === 'sent' || $mail->status === 'read')) {
+            if ($mail->recipient !== Auth::user()->email) {
                 return response()->json([
                     'mensagem' => 'Acesso não autorizado',
                 ], 403);
             }
 
-            if ($draft->status === 'sent') {
-                $draft->status = 'read';
-                $draft->save();
+            if ($mail->status === 'sent') {
+                $mail->status = 'read';
+                $mail->save();
             }
 
             return response()->json([
                 'mensagem' => 'Email marcado como lido',
-                'email' => $this->extractFromModel($draft),
+                'email' => $this->extractFromModel($mail),
             ], 200);
         }
 
