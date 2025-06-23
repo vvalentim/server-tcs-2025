@@ -24,4 +24,4 @@ Route::delete('/rascunhos/{draftId}', [DraftController::class, 'destroy']);
 Route::get('/emails', [MailController::class, 'list']);
 Route::post('/emails', [MailController::class, 'send']);
 Route::post('/emails/{draftId}', [MailController::class, 'sendFromDraft']);
-Route::put('/emails/{draftId}', [MailController::class, 'show']);
+Route::get('/emails/{draftId}', [MailController::class, 'read']);

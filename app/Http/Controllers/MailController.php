@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Middleware\ApiAuthenticate;
 use App\Http\Requests\SendMailRequest;
 use App\Models\Mail;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -48,6 +49,13 @@ class MailController extends Controller implements HasMiddleware
     public function send(SendMailRequest $request)
     {
         $validated = $request->validated();
+
+        if (User::where('email', $validated['emailDestinatario'])->doesntExist()) {
+            return response()->json([
+                'mensagem' => 'Erro na requisição',
+                'erro' => 'Destinatário não encontrado',
+            ], 404);
+        }
 
         $mail = Mail::create([
             'subject' => $validated['assunto'],
@@ -103,6 +111,13 @@ class MailController extends Controller implements HasMiddleware
                 ], 400);
             }
 
+            if (User::where('email', $draft->recipient)->doesntExist()) {
+                return response()->json([
+                    'mensagem' => 'Erro na requisição',
+                    'erro' => 'Destinatário não encontrado',
+                ], 404);
+            }
+
             $draft->status = 'sent';
             $draft->sent_at = now();
             $draft->save();
@@ -118,7 +133,7 @@ class MailController extends Controller implements HasMiddleware
         ], 404);
     }
 
-    public function show(string $draftId)
+    public function read(string $draftId)
     {
         $mail = Mail::find($draftId);
 

@@ -27,8 +27,8 @@ class StoreDraftRequest extends FormRequest
     {
         return [
             'assunto' => 'required_without_all:emailDestinatario,corpo|max:255',
-            'emailDestinatario' => 'required_without_all:assunto,corpo|email:rfc,dns',
-            // 'emailDestinatario' => 'required_without_all:assunto,corpo|email:rfc,dns|exists:users,email',
+            'emailDestinatario' => 'required_without_all:assunto,corpo|nullable|email:rfc,dns',
+            // 'emailDestinatario' => 'required_without_all:assunto,corpo|nullable|email:rfc,dns|exists:users,email',
             'corpo' => 'required_without_all:assunto,emailDestinatario|max:10000',
         ];
     }
