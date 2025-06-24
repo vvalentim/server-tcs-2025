@@ -23,7 +23,7 @@ class MailController extends Controller implements HasMiddleware
             'emailDestinatario' => $draft->recipient ?? "",
             'corpo' => $draft->body ?? "",
             'status' => $draft->status === "sent" ? "enviado" : "lido",
-            'dataEnvio' => $draft->sent_at->format('d/m/Y'),
+            'dataEnvio' => $draft->sent_at->format('d-m-Y'),
         ];
     }
 

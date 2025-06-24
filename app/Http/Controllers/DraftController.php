@@ -52,7 +52,7 @@ class DraftController extends Controller implements HasMiddleware
             return response()->json([
                 'mensagem' => 'Rascunho criado com sucesso',
                 'rascunho' => $this->extractFromModel($draft),
-            ], 201);
+            ], 200);
         }
 
         return response()->json([
